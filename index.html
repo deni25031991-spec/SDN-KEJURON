@@ -13,23 +13,19 @@
   <body>
     <div id="root"></div>
     <script>
-      // Fix for "Cannot set property fetch of #<Window> which has only a getter"
+      // Make window.fetch writable to prevent "Cannot set property fetch of #<Window> which has only a getter"
       (function() {
         if (typeof window !== 'undefined' && window.fetch) {
-          var originalFetch = window.fetch;
           try {
+            var originalFetch = window.fetch;
             Object.defineProperty(window, 'fetch', {
+              value: originalFetch,
+              writable: true,
               configurable: true,
-              enumerable: true,
-              get: function() { return originalFetch; },
-              set: function(v) { 
-                if (v !== originalFetch) {
-                  console.warn('Attempted to overwrite window.fetch, ignoring to prevent TypeError.');
-                }
-              }
+              enumerable: true
             });
           } catch (e) {
-            console.warn('Could not protect window.fetch early:', e);
+            // Silently fail if browser doesn't allow redefinition
           }
         }
       })();

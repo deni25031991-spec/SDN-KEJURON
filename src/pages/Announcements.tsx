@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Bell, ArrowRight, Filter, Plus, Edit2, Trash2, X, Save, Lock, LogIn } from 'lucide-react';
+import { Calendar, Bell, ArrowRight, Filter, Plus, Edit2, Trash2, X, Save, Lock, LogIn, MapPin, Clock, ListChecks, Phone, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,12 @@ const initialAnnouncements = [
     title: 'Pendaftaran Peserta Didik Baru (PPDB) Tahun Ajaran 2024/2025',
     date: '2024-04-10',
     description: 'Penerimaan siswa baru telah dibuka. Segera daftarkan putra-putri Anda untuk mendapatkan pendidikan terbaik dengan kurikulum modern.',
+    details: {
+      location: 'Kantor Tata Usaha SDN KEJURON',
+      time: '08:00 - 14:00 WIB',
+      agenda: ['Pengambilan Formulir', 'Verifikasi Dokumen', 'Wawancara Orang Tua', 'Tes Kematangan Siswa'],
+      contact: 'Ibu Ratna (0812-3456-7890)'
+    },
     type: 'Penting',
     category: 'Akademik'
   },
@@ -29,6 +35,12 @@ const initialAnnouncements = [
     title: 'Libur Hari Raya Idul Fitri 1445 H',
     date: '2024-04-05',
     description: 'Sesuai dengan kalender pendidikan, kegiatan belajar mengajar akan diliburkan mulai tanggal 8 April hingga 15 April 2024.',
+    details: {
+      location: 'Rumah Masing-masing',
+      time: 'Selama 8 Hari',
+      agenda: ['Cuti Bersama', 'Libur Lebaran', 'Kembali Masuk: 16 April 2024'],
+      contact: 'Sekretariat Sekolah'
+    },
     type: 'Umum',
     category: 'Kegiatan'
   },
@@ -37,6 +49,12 @@ const initialAnnouncements = [
     title: 'Pengumuman Hasil Ujian Tengah Semester Genap',
     date: '2024-03-25',
     description: 'Hasil UTS Genap sudah dapat diakses melalui portal orang tua siswa. Silakan hubungi wali kelas untuk informasi lebih lanjut.',
+    details: {
+      location: 'Portal Parent SDN KEJURON',
+      time: 'Dapat diakses 24 Jam',
+      agenda: ['Login Portal', 'Unduh E-Rapor', 'Konsultasi Wali Kelas via WA'],
+      contact: 'Wali Kelas Masing-masing'
+    },
     type: 'Penting',
     category: 'Akademik'
   },
@@ -45,6 +63,12 @@ const initialAnnouncements = [
     title: 'Workshop Parenting: Mendidik Anak di Era Digital',
     date: '2024-03-20',
     description: 'Mengundang seluruh orang tua siswa untuk hadir dalam workshop parenting yang akan dilaksanakan pada hari Sabtu mendatang.',
+    details: {
+      location: 'Aula Utama SDN KEJURON',
+      time: '09:00 - 12:00 WIB',
+      agenda: ['Pembukaan', 'Materi Inti', 'Sesi Tanya Jawab', 'Ramah Tamah'],
+      contact: 'Bapak Budi (0856-7812-3456)'
+    },
     type: 'Umum',
     category: 'Parenting'
   },
@@ -53,6 +77,12 @@ const initialAnnouncements = [
     title: 'Lomba Kebersihan Kelas dan Lingkungan Sekolah',
     date: '2024-03-15',
     description: 'Dalam rangka memperingati Hari Bumi, sekolah mengadakan lomba kebersihan antar kelas dengan hadiah menarik.',
+    details: {
+      location: 'Lingkungan Sekolah',
+      time: 'Selama 1 Minggu',
+      agenda: ['Kerja Bakti', 'Penataan Taman Kelas', 'Penilaian Juri', 'Pengumuman Juara'],
+      contact: 'OSIS / Panitia Lomba'
+    },
     type: 'Umum',
     category: 'Kegiatan'
   }
@@ -73,7 +103,11 @@ export default function AnnouncementsPage() {
     description: '',
     type: 'Umum',
     category: 'Kegiatan',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    location: '',
+    time: '',
+    contact: '',
+    agenda: ''
   });
 
   const [loginData, setLoginData] = useState({
@@ -103,7 +137,11 @@ export default function AnnouncementsPage() {
       description: '',
       type: 'Umum',
       category: 'Kegiatan',
-      date: new Date().toISOString().split('T')[0]
+      date: new Date().toISOString().split('T')[0],
+      location: '',
+      time: '',
+      contact: '',
+      agenda: ''
     });
     setIsDialogOpen(true);
   };
@@ -115,7 +153,11 @@ export default function AnnouncementsPage() {
       description: item.description,
       type: item.type,
       category: item.category,
-      date: item.date
+      date: item.date,
+      location: item.details?.location || '',
+      time: item.details?.time || '',
+      contact: item.details?.contact || '',
+      agenda: item.details?.agenda?.join(', ') || ''
     });
     setIsDialogOpen(true);
   };
@@ -129,14 +171,28 @@ export default function AnnouncementsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const submissionData = {
+      title: formData.title,
+      description: formData.description,
+      type: formData.type,
+      category: formData.category,
+      date: formData.date,
+      details: {
+        location: formData.location,
+        time: formData.time,
+        contact: formData.contact,
+        agenda: formData.agenda.split(',').map(s => s.trim()).filter(s => s !== '')
+      }
+    };
+
     if (editingItem) {
       setAnnouncements(announcements.map(a => 
-        a.id === editingItem.id ? { ...a, ...formData } : a
+        a.id === editingItem.id ? { ...a, ...submissionData } : a
       ));
       showNotification('Pengumuman berhasil diperbarui');
     } else {
       const newId = Math.max(...announcements.map(a => a.id), 0) + 1;
-      setAnnouncements([{ id: newId, ...formData }, ...announcements]);
+      setAnnouncements([{ id: newId, ...submissionData }, ...announcements]);
       showNotification('Pengumuman baru berhasil diterbitkan');
     }
     setIsDialogOpen(false);
@@ -275,7 +331,11 @@ export default function AnnouncementsPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="group relative bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl hover:border-emerald-100 dark:hover:border-pink-500 transition-all"
+              onClick={() => {
+                setSelectedAnnouncement(item);
+                setIsDetailDialogOpen(true);
+              }}
+              className="group relative bg-white dark:bg-slate-800 p-6 md:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl hover:border-emerald-100 dark:hover:border-pink-500 transition-all cursor-pointer"
             >
               <div className="flex flex-col md:flex-row md:items-start gap-6">
                 {/* Date Box */}
@@ -293,11 +353,12 @@ export default function AnnouncementsPage() {
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <Badge 
+                        variant="outline"
                         className={cn(
-                          "rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-wider border-none",
+                          "rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-wider",
                           item.type === 'Penting' 
-                            ? "bg-red-100 text-red-600" 
-                            : "bg-green-100 text-green-600"
+                            ? "bg-red-50 text-red-600 border-red-100" 
+                            : "bg-green-50 text-green-600 border-green-100"
                         )}
                       >
                         {item.type}
@@ -309,7 +370,7 @@ export default function AnnouncementsPage() {
                     </div>
 
                     {isAdmin && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                         <Button 
                           variant="ghost" 
                           size="icon-sm" 
@@ -340,10 +401,6 @@ export default function AnnouncementsPage() {
 
                   <Button 
                     variant="link" 
-                    onClick={() => {
-                      setSelectedAnnouncement(item);
-                      setIsDetailDialogOpen(true);
-                    }}
                     className="p-0 h-auto text-emerald-600 dark:text-pink-500 font-bold gap-2 group/btn"
                   >
                     Baca Selengkapnya
@@ -483,15 +540,67 @@ export default function AnnouncementsPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="desc" className="text-xs font-bold uppercase tracking-widest text-slate-400">Deskripsi</Label>
+              <Label htmlFor="desc" className="text-xs font-bold uppercase tracking-widest text-slate-400">Deskripsi Utama</Label>
               <Textarea 
                 id="desc"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Tulis isi pengumuman..."
-                className="rounded-xl border-slate-200 focus:ring-emerald-500 min-h-[120px]"
+                placeholder="Tulis ringkasan isi pengumuman..."
+                className="rounded-xl border-slate-200 focus:ring-emerald-500 min-h-[100px]"
                 required
               />
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                <Info className="w-4 h-4 text-emerald-600" />
+                Informasi Detail (Opsional)
+              </h4>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="location" className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Lokasi</Label>
+                  <Input 
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    placeholder="Contoh: Aula Sekolah"
+                    className="rounded-xl border-slate-200 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time" className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Waktu</Label>
+                  <Input 
+                    id="time"
+                    value={formData.time}
+                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                    placeholder="Contoh: 08:00 - Selesai"
+                    className="rounded-xl border-slate-200 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contact" className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Kontak Person</Label>
+                <Input 
+                  id="contact"
+                  value={formData.contact}
+                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                  placeholder="Contoh: Bpk. Andi (0812...)"
+                  className="rounded-xl border-slate-200 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="agenda" className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Agenda (Pisahkan dengan koma)</Label>
+                <Textarea 
+                  id="agenda"
+                  value={formData.agenda}
+                  onChange={(e) => setFormData({ ...formData, agenda: e.target.value })}
+                  placeholder="Contoh: Pembukaan, Inti, Penutup"
+                  className="rounded-xl border-slate-200 focus:ring-emerald-500 min-h-[80px]"
+                />
+              </div>
             </div>
 
             <DialogFooter className="pt-4">
@@ -517,188 +626,217 @@ export default function AnnouncementsPage() {
 
       {/* Announcement Detail Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-[0_50px_150px_rgba(16,185,129,0.3)] bg-white dark:bg-slate-950 sm:rounded-[4.5rem] w-[95vw] h-auto max-h-[94vh] flex flex-col selection:bg-emerald-500 selection:text-white">
+        <DialogContent className="max-w-4xl p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-slate-950 rounded-[1.5rem] md:rounded-[3rem] w-[95vw] h-auto max-h-[92vh] flex flex-col">
           {selectedAnnouncement && (
             <div className="flex flex-col h-full overflow-hidden relative">
-              {/* Dynamic Futuristic Hero */}
-              <div className="relative shrink-0 p-8 sm:p-16 md:p-24 bg-slate-900 overflow-hidden text-white">
-                {/* Layered Animated Backgrounds */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-900 to-slate-950" />
-                <div className="absolute inset-0 opacity-[0.1] pointer-events-none" style={{ backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent)', backgroundSize: '50px 50px' }} />
+              {/* Vibrant School Header */}
+              <div className="relative shrink-0 p-8 md:p-14 bg-emerald-600 dark:bg-emerald-900 overflow-hidden text-white min-h-[220px] md:min-h-[280px] flex flex-col justify-end">
+                {/* Background Patterns */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-emerald-700 to-emerald-900 opacity-90" />
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '16px 16px' }} />
                 
-                {/* Floating Glow Orbs */}
-                <div className="absolute -top-20 -left-20 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse" />
-                <div className="absolute bottom-0 right-0 w-[500px] h-32 bg-gradient-to-t from-emerald-500/10 to-transparent blur-2xl" />
+                {/* Decorative Blobs */}
+                <div className="absolute -top-10 -left-10 w-40 h-40 bg-white/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-0 right-0 w-64 h-32 bg-white/10 blur-2xl" />
                 
-                <div className="relative z-10 space-y-10">
+                <div className="relative z-10 space-y-4">
                   <motion.div 
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex flex-wrap items-center gap-4"
+                    className="flex flex-wrap items-center gap-2"
                   >
-                    <Badge className={cn(
-                      "rounded-full px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.2em] border-none shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-xl", 
-                      selectedAnnouncement.type === 'Penting' 
-                        ? "bg-red-500 text-white" 
-                        : "bg-emerald-400 text-slate-900"
-                    )}>
+                    <Badge variant="secondary" className="rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-widest bg-white text-emerald-700 hover:bg-white shadow-xl">
                       {selectedAnnouncement.type}
                     </Badge>
-                    <div className="px-6 py-2.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[11px] font-black uppercase tracking-[0.2em] text-white/80 flex items-center gap-2">
-                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                       INFO-DOC #{selectedAnnouncement.id.toString().padStart(4, '0')}
-                    </div>
+                    <Badge variant="outline" className="rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-widest border-white/40 text-white backdrop-blur-md">
+                      {selectedAnnouncement.category}
+                    </Badge>
                   </motion.div>
                   
                   <motion.h2 
-                    initial={{ opacity: 0, y: 50 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, type: "spring", damping: 15 }}
-                    className="text-4xl sm:text-6xl md:text-8xl font-black leading-[0.85] tracking-tighter uppercase italic drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)]"
+                    transition={{ delay: 0.1 }}
+                    className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] tracking-tight text-white drop-shadow-xl"
                   >
                     {selectedAnnouncement.title}
                   </motion.h2>
                 </div>
 
-                {/* Futurist Control Button */}
                 <Button
                   onClick={() => setIsDetailDialogOpen(false)}
-                  className="absolute top-8 right-8 sm:top-12 sm:right-12 z-50 w-14 h-14 md:w-20 md:h-20 rounded-[2rem] bg-black/40 backdrop-blur-3xl text-white hover:bg-emerald-500 hover:scale-110 hover:rotate-90 transition-all duration-500 border border-white/10 group shadow-3xl"
+                  variant="ghost"
+                  className="absolute top-4 right-4 z-50 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xl text-white hover:bg-white/30 transition-all border border-white/20 flex items-center justify-center p-0"
+                  aria-label="Close"
                 >
-                  <X className="w-8 h-8 group-hover:scale-125 transition-transform" />
+                  <X className="w-6 h-6" />
                 </Button>
               </div>
               
               {/* Immersive Scrollable Body */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 sm:p-20 bg-slate-50 dark:bg-slate-950 relative">
-                {/* Child-friendly Background Blob */}
-                <div className="absolute top-1/4 -right-20 w-96 h-96 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
-                
-                <div className="max-w-5xl mx-auto space-y-20 relative z-10">
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-950 p-6 sm:p-10 md:p-16">
+                <div className="max-w-full mx-auto space-y-12">
                   
-                  {/* Neon Bento Grid (Child-friendly Vibrant Colors) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {[
-                      { 
-                        icon: Calendar, 
-                        label: 'Tanggal Rilis', 
-                        value: new Date(selectedAnnouncement.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
-                        color: 'emerald',
-                        delay: 0.2
-                      },
-                      { 
-                        icon: Filter, 
-                        label: 'Kategori Info', 
-                        value: selectedAnnouncement.category,
-                        color: 'violet',
-                        delay: 0.3
-                      },
-                      { 
-                        icon: Bell, 
-                        label: 'Status Sistem', 
-                        value: `Prioritas ${selectedAnnouncement.type}`,
-                        color: 'rose',
-                        delay: 0.4
-                      }
-                    ].map((card, i) => (
-                      <motion.div 
-                        key={i}
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: card.delay }}
-                        className={cn(
-                          "bg-white dark:bg-slate-900 p-10 rounded-[4rem] border shadow-xl flex flex-col gap-6 group cursor-default transition-all duration-500",
-                          card.color === 'emerald' ? "border-emerald-100 hover:border-emerald-500/50 hover:shadow-emerald-200" :
-                          card.color === 'violet' ? "border-violet-100 hover:border-violet-500/50 hover:shadow-violet-200" :
-                          "border-rose-100 hover:border-rose-500/50 hover:shadow-rose-200"
-                        )}
-                      >
-                        <div className={cn(
-                          "w-20 h-20 rounded-[1.75rem] flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-6",
-                          card.color === 'emerald' ? "bg-emerald-50 text-emerald-600" :
-                          card.color === 'violet' ? "bg-violet-50 text-violet-600" :
-                          "bg-rose-50 text-rose-600"
-                        )}>
-                          <card.icon className="w-10 h-10" />
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400 mb-2">{card.label}</p>
-                          <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter italic uppercase">{card.value}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  {/* Bold Editorial Content */}
-                  <div className="space-y-16">
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="relative p-12 border-l-[12px] border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20 rounded-r-[3rem]"
-                    >
-                      <p className="text-3xl sm:text-4xl text-slate-900 dark:text-emerald-50 leading-[1.3] font-bold tracking-tight italic">
-                        "{selectedAnnouncement.description}"
-                      </p>
-                    </motion.div>
-                    
-                    <motion.div 
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                      className="prose prose-emerald lg:prose-xl dark:prose-invert max-w-none space-y-10 text-slate-600 dark:text-slate-400 font-medium"
-                    >
-                      <p>
-                        Informasi resmi ini diterbitkan untuk memberikan panduan yang jelas bagi seluruh warga sekolah. Kami menghargai partisipasi aktif dan kedisiplinan Bapak/Ibu sekalian dalam mengikuti arahan ini demi kepentingan bersama putra-putri kita.
-                      </p>
-                      <p>
-                        Detail teknis tambahan akan didistribusikan melalui grup komunikasi resmi sekolah. Pastikan Anda mendapatkan informasi hanya dari kanal terpercaya SDN KEJURON.
-                      </p>
-                    </motion.div>
-                  </div>
-
-                  {/* Holographic Verification Badge */}
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.7 }}
-                    className="p-12 rounded-[4rem] bg-slate-900 text-white relative overflow-hidden group shadow-3xl"
-                  >
-                    {/* Animated Shine Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 via-transparent to-blue-500/20 opacity-50 group-hover:animate-pulse" />
-                    <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-white/5 rotate-45 transform group-hover:translate-x-full transition-transform duration-1000" />
-                    
-                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
-                      <div className="space-y-6 text-center md:text-left">
-                        <div className="flex items-center justify-center md:justify-start gap-4">
-                          <div className="px-4 py-2 bg-emerald-500/20 rounded-xl border border-emerald-500/40 flex items-center gap-2">
-                             <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_15px_rgba(52,211,153,0.8)]" />
-                             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-400">Authentic School Doc</span>
-                          </div>
-                        </div>
-                        <p className="text-lg text-slate-300 font-medium max-w-2xl leading-relaxed">
-                          Sertifikat digital ini membuktikan bahwa pengumuman diterbitkan oleh <span className="text-white font-black underline decoration-emerald-500 decoration-4 underline-offset-4">Otoritas Digital SDN KEJURON</span>. 
+                  {/* Info Cards Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-5 group hover:shadow-md transition-shadow">
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 transition-transform group-hover:scale-110 group-hover:rotate-6">
+                        <Calendar className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Tanggal Post</p>
+                        <p className="text-lg font-black text-slate-900 dark:text-white tracking-tight uppercase italic sm:text-xl">
+                          {new Date(selectedAnnouncement.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
                       </div>
-                      
-                      <div className="flex -space-x-4">
-                         {['A', 'S', 'K'].map((x, i) => (
-                           <div key={i} className="w-16 h-16 rounded-[1.5rem] border-4 border-slate-900 bg-emerald-500 flex items-center justify-center text-xl font-black text-white shadow-2xl rotate-6 group-hover:rotate-12 transition-transform">
-                             {x}
-                           </div>
-                         ))}
+                    </div>
+                    
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-5 group hover:shadow-md transition-shadow">
+                      <div className="w-14 h-14 rounded-2xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 transition-transform group-hover:scale-110 group-hover:rotate-6">
+                        <Filter className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Kategori</p>
+                        <p className="text-lg font-black text-slate-900 dark:text-white tracking-tight uppercase italic sm:text-xl">
+                          {selectedAnnouncement.category}
+                        </p>
                       </div>
                     </div>
-                  </motion.div>
+                    
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-5 group hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
+                      <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 transition-transform group-hover:scale-110 group-hover:rotate-6">
+                        <Bell className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Prioritas</p>
+                        <p className="text-lg font-black text-slate-900 dark:text-white tracking-tight uppercase italic sm:text-xl">
+                          {selectedAnnouncement.type}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-                  {/* Futuristic Close Button */}
-                  <div className="flex justify-center pt-10">
+                  {/* Main Content Area */}
+                  <div className="bg-white dark:bg-slate-900 p-8 md:p-14 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500" />
+                    <div className="space-y-8">
+                      <div className="flex items-center gap-3">
+                        <ArrowRight className="w-5 h-5 text-emerald-500" />
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Deskripsi Lengkap</h4>
+                      </div>
+                      
+                      <div className="space-y-6">
+                        <p className="text-lg md:text-2xl text-slate-800 dark:text-slate-200 leading-[1.6] font-medium tracking-tight whitespace-pre-wrap break-words">
+                          {selectedAnnouncement.description}
+                        </p>
+                      </div>
+
+                      {selectedAnnouncement.details && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                          {/* Location, Time, Contact Box */}
+                          <div className="space-y-6">
+                            {selectedAnnouncement.details.location && (
+                              <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 shrink-0">
+                                  <MapPin className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Lokasi Kegiatan</p>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.location}</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedAnnouncement.details.time && (
+                              <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 shrink-0">
+                                  <Clock className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Waktu / Durasi</p>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.time}</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedAnnouncement.details.contact && (
+                              <div className="flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 shrink-0">
+                                  <Phone className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Kontak Informasi</p>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.contact}</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Agenda/List Box */}
+                          {selectedAnnouncement.details.agenda && selectedAnnouncement.details.agenda.length > 0 && (
+                            <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <ListChecks className="w-5 h-5 text-emerald-500" />
+                                <h5 className="text-xs font-black uppercase tracking-widest text-slate-500">Agenda & Langkah</h5>
+                              </div>
+                              <ul className="space-y-3">
+                                {selectedAnnouncement.details.agenda.map((item: string, i: number) => (
+                                  <li key={i} className="flex items-start gap-3 text-sm font-medium text-slate-600 dark:text-slate-400">
+                                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-[10px] font-black text-emerald-600 shrink-0 mt-0.5">
+                                      {i + 1}
+                                    </div>
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="pt-10 mt-10 border-t border-slate-100 dark:border-slate-800 space-y-6">
+                        <div className="flex items-start gap-4">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0 animate-pulse" />
+                          <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Informasi ini diterbitkan untuk memberikan panduan yang jelas bagi seluruh warga sekolah SDN KEJURON demi kepentingan bersama putra-putri kita.
+                          </p>
+                        </div>
+                        <div className="flex items-start gap-4">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0 animate-pulse" />
+                          <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                            Mohon sampaikan informasi ini kepada pihak-pihak terkait agar koordinasi dapat berjalan dengan lancar dan tertib.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Certification Footer */}
+                  <div className="bg-slate-900 text-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] relative overflow-hidden group shadow-2xl">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent pointer-events-none" />
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-center md:justify-start gap-3">
+                           <div className="px-3 py-1 bg-emerald-500/20 rounded-lg border border-emerald-500/30 text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Official Release</div>
+                        </div>
+                        <p className="text-base text-slate-300 font-bold max-w-lg leading-relaxed">
+                          Diterbitkan secara resmi oleh <span className="text-white font-black underline decoration-emerald-500 underline-offset-4">Sistem Informasi Digital SDN KEJURON</span>.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-500 bg-black/40 px-4 py-2 rounded-xl backdrop-blur-md border border-white/5 shadow-inner">
+                        <span className="opacity-50">UID:</span> INFO-DOC-{selectedAnnouncement.id.toString().padStart(4, '0')}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Large Action Button */}
+                  <div className="flex justify-center pt-4">
                     <Button 
                       onClick={() => setIsDetailDialogOpen(false)}
-                      className="group bg-emerald-600 hover:bg-emerald-500 text-white rounded-[2rem] px-20 h-24 font-black uppercase tracking-[0.5em] text-sm shadow-[0_20px_50px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95 gap-6 border-b-8 border-emerald-800"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-[2rem] px-14 h-16 md:h-20 text-lg font-black uppercase tracking-[0.2em] transition-all hover:scale-105 active:scale-95 shadow-[0_15px_40px_rgba(16,185,129,0.3)] gap-4 border-b-8 border-emerald-800"
                     >
-                      Mengerti & Tutup
-                      <ArrowRight className="w-8 h-8 transition-transform group-hover:translate-x-4" />
+                      Selesai Membaca
+                      <ArrowRight className="w-6 h-6" />
                     </Button>
                   </div>
                 </div>
