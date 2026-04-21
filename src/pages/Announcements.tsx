@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Bell, ArrowRight, Filter, Plus, Edit2, Trash2, X, Save, Lock, LogIn, MapPin, Clock, ListChecks, Phone, Info, Tag } from 'lucide-react';
+import { Calendar, Bell, ArrowRight, Filter, Plus, Edit2, Trash2, X, Save, Lock, LogIn, MapPin, Clock, ListChecks, Phone, Info, Tag, CheckCircle2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -701,157 +701,185 @@ export default function AnnouncementsPage() {
               </div>
               
               {/* Immersive Scrollable Body */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-950 p-4 sm:p-10 md:p-16">
-                <div className="max-w-full mx-auto space-y-6 md:space-y-12">
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/50 dark:bg-slate-950 p-5 sm:p-10 md:p-16">
+                <div className="max-w-4xl mx-auto space-y-10 md:space-y-16">
                   
-                  {/* Info Cards Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 sm:gap-5 group hover:shadow-md transition-shadow">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0">
-                        <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
+                  {/* Info Cards Row (Bento Style) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center gap-5 group hover:shadow-xl hover:border-emerald-100 transition-all duration-300"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0 shadow-inner">
+                        <Calendar className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Tanggal Post</p>
-                        <p className="text-sm sm:text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
+                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 mb-1">Diterbitkan</p>
+                        <p className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
                           {new Date(selectedAnnouncement.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                     
-                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 sm:gap-5 group hover:shadow-md transition-shadow">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0">
-                        <Filter className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center gap-5 group hover:shadow-xl hover:border-violet-100 transition-all duration-300"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0 shadow-inner">
+                        <Filter className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Kategori</p>
-                        <p className="text-sm sm:text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
+                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 mb-1">Kanal Info</p>
+                        <p className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
                           {selectedAnnouncement.category}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                     
-                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4 sm:gap-5 group hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0">
-                        <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex items-center gap-5 group hover:shadow-xl hover:border-rose-100 transition-all duration-300 sm:col-span-2 lg:col-span-1"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 transition-transform group-hover:scale-110 group-hover:rotate-6 shrink-0 shadow-inner">
+                        <Bell className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Prioritas</p>
-                        <p className="text-sm sm:text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
+                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 mb-1">Urgensi</p>
+                        <p className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase italic break-words">
                           {selectedAnnouncement.type}
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
 
-                  {/* Main Content Area */}
-                  <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 md:p-14 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-visible w-full min-w-0">
-                    <div className="absolute top-0 left-0 w-2 h-full bg-emerald-500 rounded-l-[2rem] md:rounded-l-[2.5rem]" />
-                    <div className="space-y-6 md:space-y-8">
-                      <div className="flex items-center gap-3">
-                        <ArrowRight className="w-5 h-5 text-emerald-500" />
-                        <h4 className="text-[10px] md:text-sm font-black uppercase tracking-[0.2em] text-slate-400">Deskripsi Lengkap</h4>
+                  {/* Body Content Section */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start text-left">
+                    
+                    {/* Left: Main text content (8 cols) */}
+                    <div className="lg:col-span-8 space-y-8">
+                      <div className="relative group">
+                        <div className="absolute -left-4 md:-left-8 top-0 bottom-0 w-1.5 bg-emerald-500 rounded-full opacity-50 group-hover:opacity-100 transition-opacity" />
+                        <div className="space-y-6">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+                              <Info className="w-4 h-4" />
+                            </div>
+                            <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">Pesan Pengumuman</h4>
+                          </div>
+                          
+                          <p className="text-lg sm:text-xl md:text-2xl text-slate-800 dark:text-slate-200 leading-relaxed md:leading-[1.7] font-medium tracking-tight whitespace-pre-line break-words selection:bg-emerald-100 selection:text-emerald-900">
+                            {selectedAnnouncement.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Notes Section */}
+                      <div className="pt-8 grid grid-cols-1 gap-5">
+                        <div className="p-6 bg-slate-100/50 dark:bg-slate-900/50 rounded-[2rem] border border-slate-200/50 dark:border-slate-800/50 flex gap-4">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0 animate-pulse" />
+                          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium italic">
+                            Informasi ini diterbitkan untuk memberikan panduan yang jelas bagi seluruh warga sekolah SDN KEJURON demi kepentingan bersama.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Event Logistics & Agenda (4 cols) */}
+                    {(selectedAnnouncement.details) && (
+                      <div className="lg:col-span-4 space-y-6">
+                        {/* Event Details Card */}
+                        {(selectedAnnouncement.details.location || selectedAnnouncement.details.time || selectedAnnouncement.details.contact) && (
+                          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Detail Kejadian</h5>
+                            
+                            <div className="space-y-6">
+                              {selectedAnnouncement.details.location && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2 text-emerald-600">
+                                    <MapPin className="w-4 h-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Lokasi</span>
+                                  </div>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 pl-6">{selectedAnnouncement.details.location}</p>
+                                </div>
+                              )}
+
+                              {selectedAnnouncement.details.time && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2 text-violet-600">
+                                    <Clock className="w-4 h-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Waktu</span>
+                                  </div>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 pl-6">{selectedAnnouncement.details.time}</p>
+                                </div>
+                              )}
+
+                              {selectedAnnouncement.details.contact && (
+                                <div className="space-y-2">
+                                  <div className="flex items-center gap-2 text-rose-600">
+                                    <Phone className="w-4 h-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Narahubung</span>
+                                  </div>
+                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 pl-6">{selectedAnnouncement.details.contact}</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Agenda Card */}
+                        {selectedAnnouncement.details.agenda && selectedAnnouncement.details.agenda.length > 0 && (
+                          <div className="bg-emerald-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-200/20 space-y-6">
+                            <div className="flex items-center gap-3 border-b border-white/20 pb-4">
+                              <ListChecks className="w-6 h-6 text-emerald-200" />
+                              <h5 className="text-xs font-black uppercase tracking-[0.2em]">Agenda Utama</h5>
+                            </div>
+                            <ul className="space-y-4">
+                              {selectedAnnouncement.details.agenda.map((item: string, i: number) => (
+                                <li key={i} className="flex items-start gap-4 transition-transform hover:translate-x-1 duration-200">
+                                  <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center text-[10px] font-black text-white shrink-0 mt-0.5 border border-white/10">
+                                    {i + 1}
+                                  </div>
+                                  <span className="text-sm font-medium leading-relaxed opacity-95">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Certification Footer (Modern Styled) */}
+                  <div className="relative group overflow-hidden rounded-[3rem] shadow-2xl">
+                    <div className="absolute inset-0 bg-slate-900" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 via-transparent to-rose-500/10 opacity-60 pointer-events-none" />
+                    
+                    <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row justify-between items-center gap-8">
+                      <div className="space-y-4 text-center md:text-left">
+                        <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/20 rounded-full border border-emerald-500/30 backdrop-blur-md">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Rilis Resmi Digital</span>
+                        </div>
+                        <p className="text-base md:text-lg text-slate-300 font-bold max-w-lg leading-relaxed">
+                          Diterbitkan secara resmi oleh <span className="text-white font-black underline decoration-emerald-500 decoration-2 underline-offset-8">Sistem Informasi SDN KEJURON</span> untuk transparansi publik.
+                        </p>
                       </div>
                       
-                      <div className="space-y-6 min-w-0">
-                        <p className="text-base sm:text-xl md:text-2xl text-slate-800 dark:text-slate-200 leading-relaxed md:leading-[1.7] font-medium tracking-tight whitespace-pre-line break-words overflow-hidden selection:bg-emerald-100 selection:text-emerald-900">
-                          {selectedAnnouncement.description}
-                        </p>
-                      </div>
-
-                      {selectedAnnouncement.details && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-                          {/* Location, Time, Contact Box */}
-                          <div className="space-y-6">
-                            {selectedAnnouncement.details.location && (
-                              <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 shrink-0">
-                                  <MapPin className="w-5 h-5" />
-                                </div>
-                                <div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Lokasi Kegiatan</p>
-                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.location}</p>
-                                </div>
-                              </div>
-                            )}
-
-                            {selectedAnnouncement.details.time && (
-                              <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 shrink-0">
-                                  <Clock className="w-5 h-5" />
-                                </div>
-                                <div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Waktu / Durasi</p>
-                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.time}</p>
-                                </div>
-                              </div>
-                            )}
-
-                            {selectedAnnouncement.details.contact && (
-                              <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 shrink-0">
-                                  <Phone className="w-5 h-5" />
-                                </div>
-                                <div>
-                                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Kontak Informasi</p>
-                                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{selectedAnnouncement.details.contact}</p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Agenda/List Box */}
-                          {selectedAnnouncement.details.agenda && selectedAnnouncement.details.agenda.length > 0 && (
-                            <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 space-y-4">
-                              <div className="flex items-center gap-2 mb-2">
-                                <ListChecks className="w-5 h-5 text-emerald-500" />
-                                <h5 className="text-xs font-black uppercase tracking-widest text-slate-500">Agenda & Langkah</h5>
-                              </div>
-                              <ul className="space-y-3">
-                                {selectedAnnouncement.details.agenda.map((item: string, i: number) => (
-                               <li key={i} className="flex items-start gap-3 text-sm font-medium text-slate-600 dark:text-slate-400 break-words">
-                                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-[10px] font-black text-emerald-600 shrink-0 mt-0.5">
-                                      {i + 1}
-                                    </div>
-                                    <span className="flex-1 min-w-0 break-words">{item}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                      <div className="flex flex-col items-center md:items-end gap-3 text-right">
+                        <div className="font-mono text-[10px] text-emerald-500 bg-black/40 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-white/5 shadow-inner flex items-center gap-3">
+                          <span className="opacity-40 select-none">DOC-ID</span> 
+                          <span className="font-black tracking-widest">{selectedAnnouncement.id.toString().padStart(5, '0')}-2024</span>
                         </div>
-                      )}
-
-                      <div className="pt-10 mt-10 border-t border-slate-100 dark:border-slate-800 space-y-6">
-                        <div className="flex items-start gap-4">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0 animate-pulse" />
-                          <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Informasi ini diterbitkan untuk memberikan panduan yang jelas bagi seluruh warga sekolah SDN KEJURON demi kepentingan bersama putra-putri kita.
-                          </p>
+                        <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-500">
+                          <Globe className="w-3 h-3" />
+                          sdnkejuron.sch.id
                         </div>
-                        <div className="flex items-start gap-4">
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2 shrink-0 animate-pulse" />
-                          <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            Mohon sampaikan informasi ini kepada pihak-pihak terkait agar koordinasi dapat berjalan dengan lancar dan tertib.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Certification Footer */}
-                  <div className="bg-slate-900 text-white p-6 md:p-12 rounded-[2rem] md:rounded-[3rem] relative overflow-hidden group shadow-2xl">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent pointer-events-none" />
-                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-center md:justify-start gap-3">
-                           <div className="px-3 py-1 bg-emerald-500/20 rounded-lg border border-emerald-500/30 text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">Official Release</div>
-                        </div>
-                        <p className="text-sm md:text-base text-slate-300 font-bold max-w-lg leading-relaxed">
-                          Diterbitkan secara resmi oleh <span className="text-white font-black underline decoration-emerald-500 underline-offset-4">Sistem Informasi Digital SDN KEJURON</span>.
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 font-mono text-[9px] md:text-[10px] text-emerald-500 bg-black/40 px-4 py-2 rounded-xl backdrop-blur-md border border-white/5 shadow-inner">
-                        <span className="opacity-50">UID:</span> INFO-DOC-{selectedAnnouncement.id.toString().padStart(4, '0')}
                       </div>
                     </div>
                   </div>
