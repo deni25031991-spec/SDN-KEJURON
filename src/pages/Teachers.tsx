@@ -202,68 +202,86 @@ export default function TeachersPage() {
               <motion.div
                 key={teacher.name}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -10 }}
-                className="bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden border-2 border-slate-50 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-pink-500 shadow-sm hover:shadow-2xl transition-all group"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, delay: idx * 0.05 }}
+                whileHover={{ y: -8 }}
+                className="group relative h-full flex flex-col bg-white dark:bg-slate-800 rounded-[3rem] overflow-hidden border-2 border-slate-50 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 shadow-sm hover:shadow-2xl transition-all duration-500"
               >
-                <div className="h-40 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-pink-500/20 mix-blend-overlay z-10" />
+                {/* Visual Header */}
+                <div className="relative h-44 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/40 via-transparent to-pink-500/20 z-10" />
                   <img 
-                    src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop" 
-                    alt="School Background" 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-40"
+                    src={`https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2132&auto=format&fit=crop&sig=${idx}`} 
+                    alt="School Decoration" 
+                    className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-1000 opacity-60"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-800 via-transparent to-transparent z-20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-800 via-white/20 dark:via-transparent to-transparent z-20" />
                 </div>
                 
-                <div className="relative px-8 pb-8">
-                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-3xl border-4 border-white dark:border-slate-800 overflow-hidden bg-slate-200 shadow-2xl z-30 group-hover:rotate-3 transition-transform">
-                    <img 
-                      src={teacher.image} 
-                      alt={teacher.name} 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  
-                  <div className="pt-20 text-center space-y-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-pink-400 transition-colors">
-                        {teacher.name}
-                      </h3>
-                      <div className="text-[10px] font-black text-emerald-600 dark:text-pink-500 uppercase tracking-[0.2em] mt-1">
-                        {teacher.role}
+                {/* Main Identity Section */}
+                <div className="relative flex-1 px-8 pb-8 flex flex-col items-center">
+                  {/* Floating Avatar */}
+                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 z-30 group-hover:-translate-y-2 transition-transform duration-500">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-emerald-500 rounded-[2.5rem] blur-xl opacity-0 group-hover:opacity-40 transition-opacity" />
+                      <div className="relative w-32 h-32 rounded-[2.5rem] border-4 border-white dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900 shadow-2xl">
+                        <img 
+                          src={teacher.image} 
+                          alt={teacher.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          referrerPolicy="no-referrer"
+                        />
                       </div>
                     </div>
+                  </div>
+                  
+                  {/* Info Body */}
+                  <div className="pt-20 text-center flex-1 flex flex-col w-full">
+                    <div className="mb-4">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white leading-[1.2] group-hover:text-emerald-600 transition-colors">
+                        {teacher.name}
+                      </h3>
+                      <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.25em] mt-2 bg-emerald-50 dark:bg-emerald-900/30 py-1 px-3 rounded-full inline-block">
+                        {teacher.role}
+                      </p>
+                    </div>
                     
-                    <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl">
-                      <GraduationCap className="w-4 h-4 text-emerald-500 dark:text-pink-500" />
+                    <div className="flex items-center justify-center gap-2 text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">
+                      <GraduationCap className="w-4 h-4 text-emerald-500" />
                       {teacher.subject}
                     </div>
 
                     {teacher.detailedSubjects && (
-                      <div className="flex flex-wrap justify-center gap-1.5 px-2">
-                        {teacher.detailedSubjects.map((det, sIdx) => (
-                          <span key={sIdx} className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700/50 text-[9px] font-black uppercase tracking-tight text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                      <div className="flex flex-wrap justify-center gap-1.5 mb-6">
+                        {teacher.detailedSubjects.slice(0, 3).map((det, sIdx) => (
+                          <span key={sIdx} className="px-3 py-1 rounded-lg bg-slate-50 dark:bg-slate-900/60 text-[9px] font-black uppercase tracking-tight text-slate-400 border border-slate-100 dark:border-slate-800">
                             {det}
                           </span>
                         ))}
+                        {teacher.detailedSubjects.length > 3 && (
+                          <span className="px-3 py-1 rounded-lg bg-emerald-50 text-[9px] font-black uppercase text-emerald-600">
+                             +{teacher.detailedSubjects.length - 3}
+                          </span>
+                        )}
                       </div>
                     )}
       
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
-                      "{teacher.bio}"
-                    </p>
+                    <div className="relative flex-1 mb-8">
+                       <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-[1.8] font-medium italic relative z-10 line-clamp-3 group-hover:line-clamp-none transition-all">
+                        "{teacher.bio}"
+                      </p>
+                    </div>
       
-                    <div className="pt-4 flex items-center justify-center gap-4 border-t border-slate-100 dark:border-slate-700">
+                    {/* Social Hub */}
+                    <div className="pt-6 flex items-center justify-center gap-3 border-t border-slate-50 dark:border-slate-700/50">
                       <a 
                         href={`https://wa.me/${teacher.whatsapp}`} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 transition-colors" 
+                        className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-emerald-500 hover:text-white transition-all hover:scale-110 active:scale-95" 
                         title="WhatsApp"
                       >
                         <MessageCircle className="w-4 h-4" />
@@ -274,40 +292,40 @@ export default function TeachersPage() {
                           href={`https://instagram.com/${teacher.instagram}`} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-pink-50 dark:hover:bg-pink-900/30 hover:text-pink-600 transition-colors" 
+                          className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-gradient-to-tr hover:from-orange-500 hover:to-pink-600 hover:text-white transition-all hover:scale-110" 
                           title="Instagram"
                         >
                           <Instagram className="w-4 h-4" />
                         </a>
                       )}
-
+  
                       {teacher.facebook && (
                         <a 
                           href={`https://facebook.com/${teacher.facebook}`} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 transition-colors" 
+                          className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-blue-600 hover:text-white transition-all hover:scale-110" 
                           title="Facebook"
                         >
                           <Facebook className="w-4 h-4" />
                         </a>
                       )}
-
+  
                       {teacher.linkedin && (
                         <a 
                           href={`https://linkedin.com/in/${teacher.linkedin}`} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 transition-colors" 
+                          className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all hover:scale-110" 
                           title="LinkedIn"
                         >
                           <Linkedin className="w-4 h-4" />
                         </a>
                       )}
-
+  
                       <a 
                         href={`mailto:${teacher.email}`} 
-                        className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 hover:text-emerald-600 transition-colors" 
+                        className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all hover:scale-110" 
                         title="Email"
                       >
                         <Mail className="w-4 h-4" />
